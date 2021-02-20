@@ -8,7 +8,9 @@ const color = document.querySelector("#color");
 const activitiesTotal = document.querySelector("#activities-cost");
 const asteriskInputs = document.querySelectorAll(".asterisk + input");
 const activitiesCheckboxList = document.querySelectorAll("#activities-box > label > input[type=checkbox]");
-let x = 0;
+const activitiesInputList = document.querySelectorAll(".asterisk + input");
+
+let x = 0; 
 //DOMContentLoad
 //Set Focus on Name Input
 nameInput.focus();
@@ -91,85 +93,57 @@ if (document.querySelector("#payment").selectedIndex == !0) {
         false
     );
 }
-
-
 /* ================================= 
     Form Validation - Text inputs
 ==================================== */
-function checkInputs(event) {
-    for (let i = 0; i < 2; i++) {
-        if (asteriskInputs[i].name == "user-name") {
-            if (/(\w+\S+)/.test(asteriskInputs[i].value) == false) {
-                asteriskInputs[i].parentElement.classList.add("not-valid");
-                asteriskInputs[i].parentElement.classList.remove("valid");
-                asteriskInputs[i].nextElementSibling.style.display ="block";
-                event.preventDefault();
-            }
-            else{
-                asteriskInputs[i].parentElement.classList.remove("not-valid");
-                asteriskInputs[i].parentElement.classList.add("valid");
-                asteriskInputs[i].nextElementSibling.style.display ="none";
-            }
-        }
-        if (asteriskInputs[i].name == "user-email") {
-            if (/((?!\.)["\w+-_.]*[^.])(@\w+)(.com)/.test(asteriskInputs[i].value) == false) {
-                asteriskInputs[i].parentElement.classList.add("not-valid");
-                asteriskInputs[i].parentElement.classList.remove("valid");
-                asteriskInputs[i].nextElementSibling.style.display ="block";
-                event.preventDefault();
-            }
-            else{
-                asteriskInputs[i].parentElement.classList.remove("not-valid");
-                asteriskInputs[i].parentElement.classList.add("valid");
-                asteriskInputs[i].nextElementSibling.style.display ="none";
-            }
-        }
-    }
-    if (document.querySelector("#payment > option:nth-child(2)").selected == true) {
-        for(let i = 2; i < 5; i++){    //credit card Options
-            if (asteriskInputs[i].name == "user-cc-num") {
-                if (/\b(?:\d[ -]*?){13,16}\b/.test(asteriskInputs[i].value) == false) {
-                    asteriskInputs[i].parentElement.classList.add("not-valid");
-                    asteriskInputs[i].parentElement.classList.remove("valid");
-                    asteriskInputs[i].nextElementSibling.style.display ="block";
-                    event.preventDefault();
-                }
-                else{
-                    asteriskInputs[i].parentElement.classList.remove("not-valid");
-                    asteriskInputs[i].parentElement.classList.add("valid");
-                    asteriskInputs[i].nextElementSibling.style.display ="none";
-                }
-            }
-            if (asteriskInputs[i].name == "user-zip") {
-                if (/^\d{5}(?:[-\s]\d{4})?$/.test(asteriskInputs[i].value) == false) {
-                    asteriskInputs[i].parentElement.classList.add("not-valid");
-                    asteriskInputs[i].parentElement.classList.remove("valid");    
-                    asteriskInputs[i].nextElementSibling.style.display ="block";
-                    event.preventDefault();
-                }
-                else{
-                    asteriskInputs[i].parentElement.classList.remove("not-valid");
-                    asteriskInputs[i].parentElement.classList.add("valid");
-                    asteriskInputs[i].nextElementSibling.style.display ="none";
-                }
-            }
-            if (asteriskInputs[i].name == "user-cvv") {
-                if (/^[0-9]{3}$/.test(asteriskInputs[i].value) == false) {
-                    asteriskInputs[i].parentElement.classList.add("not-valid");
-                    asteriskInputs[i].parentElement.classList.remove("valid");
-                    asteriskInputs[i].nextElementSibling.style.display ="block";
-                    event.preventDefault();
-                }
-                else{
-                    asteriskInputs[i].parentElement.classList.remove("not-valid");
-                    asteriskInputs[i].parentElement.classList.add("valid");
-                    asteriskInputs[i].nextElementSibling.style.display ="none";
-                }
-            }
-        }
+const formValidation = {
+    "user-name": {
+        "reg": RegExp(`(\\w+\\S+)`)
+    },
+    "user-email":{
+        "reg": RegExp(`((?!\\.)["\\w+-_.]*[^.])(@\\w+)(.com)`)
+    }, 
+    "user-cc-num":{
+        "reg": RegExp(`\\b(?:\\d[ -]*?){13,16}\\b`)    
+    },
+    "user-zip": {
+        "reg": RegExp(`(\\w+\\S+)`)
+    },
+    "user-cvv":{
+        "reg": RegExp( `[0-9]{3}`)
     }
 }
 
+function checkInputs(event){
+    function formValidate(item){
+        //Display inValid Text
+        let inputNameKey = Object.keys(formValidation)[item]
+        console.log(formValidation[inputNameKey]["reg"].test(activitiesInputList[item].value));
+        if(formValidation[inputNameKey]["reg"].test(activitiesInputList[item].value) == false){
+            asteriskInputs[item].parentElement.classList.add("not-valid");
+            asteriskInputs[item].parentElement.classList.remove("valid");
+            asteriskInputs[item].nextElementSibling.style.display ="block";
+            event.preventDefault();
+        }
+        //Display Valid Text
+        else{
+            asteriskInputs[item].parentElement.classList.remove("not-valid");
+            asteriskInputs[item].parentElement.classList.add("valid");
+            asteriskInputs[item].nextElementSibling.style.display ="none";
+        } 
+    };
+
+    //Iterate through all astrik inputs 
+    for(let i = 0; i < 2; i++){
+        formValidate(i);
+    }
+    //Iterate through main inputs 
+    if(document.querySelector("#payment > option:nth-child(2)").selected == true){
+        for(let i = 2; i < 5; i++){
+            formValidate(i);
+        }
+    }
+}
 document.querySelector("body > div > form").addEventListener("submit", checkInputs);
 
 /* ================================= 
@@ -177,16 +151,17 @@ document.querySelector("body > div > form").addEventListener("submit", checkInpu
 ==================================== */
 
 function checkDates(checkedActivity){
-    //Activity Event target variables
+    //Activity Event Target Variables
     let targetDate = checkedActivity.parentElement.children[2].innerText;
     let targetName = checkedActivity.parentElement.children[0].name;    
+
     //Check For Conflicting Dates
     for(let i = 1; i < activitiesCheckboxList.length;i++){
         //Other activity variables 
         let otherActivityDate = activitiesCheckboxList[i].parentElement.children[2].innerText;
         let otherActivityName = activitiesCheckboxList[i].parentElement.children[0].name;
-        
-        //Compare targetDate with other Activities
+
+        //Compare targetDate with other activities
         if(targetDate == otherActivityDate && otherActivityName != targetName){
             checkedActivity.parentElement.classList.remove('disabled');
             activitiesCheckboxList[i].parentElement.classList.add('disabled');
@@ -231,10 +206,12 @@ for(let i = 0; i < activitiesCheckboxList.length;i++){
             event.preventDefault();
         }
     })
+    //Add Focus Class
     activitiesCheckboxList[i].addEventListener('focus',(event)=>{
         activitiesCheckboxList[i].parentElement.classList.add('focus')
         event.preventDefault();
     })
+    //Remove Focus Class
     activitiesCheckboxList[i].addEventListener('blur',(event)=>{
         activitiesCheckboxList[i].parentElement.classList.remove('focus')
         event.preventDefault();
