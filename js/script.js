@@ -116,7 +116,7 @@ const formValidation = {
 
 function checkInputs(event){
     function formValidate(item){
-        //Display inValid Text
+        //Display inValid
         let inputNameKey = Object.keys(formValidation)[item]
         console.log(formValidation[inputNameKey]["reg"].test(activitiesInputList[item].value));
         if(formValidation[inputNameKey]["reg"].test(activitiesInputList[item].value) == false){
@@ -125,7 +125,7 @@ function checkInputs(event){
             asteriskInputs[item].nextElementSibling.style.display ="block";
             event.preventDefault();
         }
-        //Display Valid Text
+        //Display Valid
         else{
             asteriskInputs[item].parentElement.classList.remove("not-valid");
             asteriskInputs[item].parentElement.classList.add("valid");
