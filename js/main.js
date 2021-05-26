@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const activities = document.getElementById('activities');
     const error_border = document.querySelectorAll('.error-border');
     const form = document.querySelector('form');
-    console.log(activitiesCheckboxList);
+    
     let x = 0;
     //DOMContentLoad
     //Set Focus on Name Input
@@ -201,6 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
             activitiesCheckboxList[i].parentElement.classList.remove('focus');
         });
     }
+
     form.addEventListener('submit', (event) => {
         let creditCardSelectionIndex = document.querySelector("#payment").selectedIndex;
         const textValidations = {
@@ -265,9 +266,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             },
             SELECT: (targetElement) => {
-                //console.log(targetElement)
                 if(creditCardSelectionIndex == 1){  
-                    console.log("Enter Select Proper")
                     if (targetElement.selectedIndex == 0) {
                         event.preventDefault()
                         targetElement.parentNode.classList.add('not-valid');
